@@ -1,0 +1,31 @@
+{% extends 'dummy.html' %}
+
+{% block title %}
+    <title>Home Page</title>
+
+{% endblock %}
+
+
+
+{% block body_block  %}
+<style>
+  img {
+      transition: transform 2s ease;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+img:hover{
+      transform:  rotate(360deg);
+      letter-spacing: 10px;
+      color: crimson;
+    }
+</style>
+{% if username %}
+        <h1>Welcome, {{ username }}!</h1>
+    {% else %}
+        <h1>Welcome to Home Page</h1>
+    {% endif %}
+
+    <img src="{{ pic }}" alt="Profile Picture" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #ccc;" >
+
+{% endblock %}

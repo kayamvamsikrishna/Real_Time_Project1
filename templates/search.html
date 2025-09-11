@@ -1,0 +1,101 @@
+{% extends 'dummy.html' %}
+
+{% block title %}
+    <title>Home Page</title>
+{% endblock %}
+
+{% block body_block %}
+
+{% if obj %}
+    <h2 style="text-align: center;">Weather Information</h2>
+<table border="1" cellpadding="10" width="80%" align="center">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>City</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Feels Like (°C)</th>
+            <th>Wind Speed (m/s)</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ obj.username }}</td>
+            <td>{{ obj.city }}</td>
+            <td>{{ obj.temperature }}</td>
+            <td>{{ obj.humidity }}</td>
+            <td>{{ obj.weather }}</td>
+            <td>{{ obj.speed }}</td>
+            <td>{{ lat|default:"N/A" }}</td>
+            <td>{{ lon|default:"N/A" }}</td>
+            <td>{{ obj.timestamp }}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+  
+
+<h2 style="text-align: center; margin-top: 30px;">News Articles</h2>
+{% if articles %}
+        <ul style="width: 80%; margin: auto;">
+            {% for article in articles %}
+                <li style="margin-bottom: 20px;">
+                    <a href="{{ article.url }}" target="_blank"><strong>{{ article.title }}</strong></a><br>
+                    <small>{{ article.publishedAt }}</small>
+                    <p>{{ article.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p style="text-align: center;">No news articles found for this city.</p>
+{% endif %}
+
+{% if lat is not None and lon is not None %}
+        <h2 style="text-align: center; margin-top: 30px;">Map of {{ obj.city }}</h2>
+        <div id="map" style="height: 400px; width: 80%; margin: auto;"></div>
+
+        <script>
+            function initMap() {
+                var location = {
+                    lat: {{ lat|floatformat:"6" }},
+                    lng: {{ lon|floatformat:"6" }}
+                };
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: location
+                });
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+            }
+        </script>
+
+        <script async
+            src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap">
+        </script>
+{% else %}
+        <p style="text-align: center; margin-top: 20px;">Map data not available for this city.</p>
+{% endif %}
+
+<div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'search' %}">Search Again</a>
+</div>
+
+{% else %}
+    <center>
+        <form method="POST" class="kkk" style="margin-top: 50px;">
+            {% csrf_token %}
+            <label for="city">CITY:</label>
+            <input type="text" id="city" name="city" required>
+            <input type="submit" value="Confirm">
+        </form>
+    </center>
+{% endif %}
+
+{% endblock %}
